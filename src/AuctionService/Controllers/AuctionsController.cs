@@ -100,6 +100,7 @@ public class AuctionsController : ControllerBase
         return BadRequest("Problem saving changes");
     }
 
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteAuction(Guid id)
     {
@@ -107,7 +108,7 @@ public class AuctionsController : ControllerBase
 
         if (auction == null) return NotFound();
 
-        // TODO: Check seller == username
+        if (auction.Seller != User.Identity.Name) return Forbid();
 
         _context.Auctions.Remove(auction);
 
